@@ -20,7 +20,7 @@ def labelFlip(df,colName):
     df[colName] = flippable.values
     print(head(df))
     return df
-#------- Create Data --------------------
+
 def simContinuous(mus, sds, n = 10, cols = []):
     '''Simulates continuous data columns, these
     aren't assumed to be correlated...should I add that? Maybe. IDK.'''
@@ -55,18 +55,55 @@ def combineCandD(m1,m2):
     together = np.concatenate((m1, m2), axis=1)
     print(together)
     return together
-
-def genRelatedOut(coefs,df):
-    # outPut = np.dot(allNs, coefs)
-    # outPut = pd.Series(outPut)
-    # #print("OUT", outPut, len(outPut))
-    # data = pd.DataFrame(allNs, columns = cols)
-    # data = data.assign(out = outPut)
-    # print(data)
-    pass
-def genRandomOut(df):
-    pass
-a = simContinuous([1,1,1],[0.1,0.5,0.001], n = 10)
-b = simDiscrete([[0.5,0.5],[0.1,0.9]], [[0,1],[2,4]], n = 10)
-combineCandD(a,b)
+# a = simContinuous([1,1,1],[0.1,0.5,0.001], n = 10)
+# b = simDiscrete([[0.5,0.5],[0.1,0.9]], [[0,1],[2,4]], n = 10)
+# combineCandD(a,b)
 #------- Distribution Generation --------------------
+class SDO(object):
+    #shuffalable data object
+    def __init__(self, n = 10, cols = [], mus = [],sds = [], props = [], opts = []):
+        self.n = n
+        self.data = None
+        self.Cdata = None
+        self.Ddata = None
+        self.cols = cols
+        if self.cols == []:
+            self.cols = []
+            for i in range(0,len(mus)):
+                self.cols.append("c" + str(i))
+        else:
+            self.cols = cols
+        self.mus = mus
+        self.sds = sds
+        self.props = props
+        self.opts = opts
+    def simContinuous(self):
+        '''Simulates continuous data columns, these
+        aren't assumed to be correlated...should I add that? Maybe. IDK.'''
+        self.mus = np.array(mus)
+        self.sds = np.array(sds)
+        allNs = self.sds * np.random.randn(n,len(self.mus)) + self.mus
+        self.Cdata = np.matrix(allNs)
+    def simDiscrete(self):
+        '''simulates discrete data columns, assumed not to be related'''
+        ns = []
+        for i in range(0,len(self.props)):
+            col = np.random.choice(a = self.opts[i], size = self.n, p = self.props[i])
+            ns.append(col)
+        n = np.matrix(ns)
+        n = n.transpose()
+        self.Ddata = n
+    def combineCandD(self):
+        '''combine continuous and discrete variables when necessary'''
+        self.data = np.concatenate((self.Cdata, self.Ddata), axis=1)
+    def labelFlip(self,flipCol):
+        '''Randomly Shuffles Classifications'''
+        flippable = list(self.data[colName])
+        random.shuffle(flippable)
+        flippable = pd.Series(flippable)
+        self.data[colName] = flippable.values
+    def mvSimCont():
+        pass
+    def mvSimDisc():
+        pass
+    
