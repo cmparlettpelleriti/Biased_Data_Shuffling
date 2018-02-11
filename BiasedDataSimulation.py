@@ -21,7 +21,7 @@ def labelFlip(df,colName):
     print(head(df))
     return df
 
-def simContinuous(mus, sds, n = 10, cols = []):
+def simContinuous(mus, cov, n = 10, cols = []):
     '''Simulates continuous data columns, these
     aren't assumed to be correlated...should I add that? Maybe. IDK.'''
     if cols == []:
@@ -29,8 +29,8 @@ def simContinuous(mus, sds, n = 10, cols = []):
             cols.append("c" + str(i))
     coefs = np.array(coefs)
     mus = np.array(mus)
-    sds = np.array(sds)
-    allNs = sds * np.random.randn(n,len(coefs)) + mus
+    cov = np.array(cov)
+    allNs = cov * np.random.randn(n,len(coefs)) + mus
     allNs = np.matrix(allNs)
     print(allNs)
     return allNs
@@ -61,28 +61,39 @@ def combineCandD(m1,m2):
 #------- Distribution Generation --------------------
 class SDO(object):
     #shuffalable data object
-    def __init__(self, n = 10, cols = [], mus = [],sds = [], props = [], opts = []):
+    '''cov: can be  one or two dimensional'''
+    def __init__(self, n = 10, cols = [], mus = [],cov = [], props = [], opts = []):
         self.n = n
         self.data = None
         self.Cdata = None
         self.Ddata = None
         self.cols = cols
+        #--------------------
         if self.cols == []:
             self.cols = []
             for i in range(0,len(mus)):
                 self.cols.append("c" + str(i))
         else:
             self.cols = cols
+        #--------------------
         self.mus = mus
-        self.sds = sds
+        self.cov = cov
         self.props = props
         self.opts = opts
+        #--------------------
+        if mus != []:
+            self.simContinuous()
+        if props != []:
+            self.simDiscrete()
+        if self.Cdata != None and self.Ddata != None:
+            self.combineCandD()
+        #--------------------
     def simContinuous(self):
         '''Simulates continuous data columns, these
         aren't assumed to be correlated...should I add that? Maybe. IDK.'''
         self.mus = np.array(mus)
-        self.sds = np.array(sds)
-        allNs = self.sds * np.random.randn(n,len(self.mus)) + self.mus
+        self.cov = np.array(cov)
+        allNs = self.cov * np.random.randn(n,len(self.mus)) + self.mus
         self.Cdata = np.matrix(allNs)
     def simDiscrete(self):
         '''simulates discrete data columns, assumed not to be related'''
@@ -102,8 +113,14 @@ class SDO(object):
         random.shuffle(flippable)
         flippable = pd.Series(flippable)
         self.data[colName] = flippable.values
-    def mvSimCont():
+    def mvSimCont(self):
+        '''Simulating multivariate continuous continuous data
+        '''
+        self.Cdata = np.random.multivariate_normal(self.mus,self.cov,size = n)
         pass
-    def mvSimDisc():
+    def mvSimDisc(self,thresholds = None):
+        d = np.random.multivariate_normal(self.mus, self.cov, size = n)
+        d = d.transpose()
+        for i in d:
+            c = i
         pass
-    
