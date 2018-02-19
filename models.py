@@ -54,6 +54,6 @@ def multi_layer_perceptron(X,H=10,output_layer=1,W1=None,W2=None):
 # example data ~ 20 samples, 3 attributes
 x = np.random.uniform(2,4,size=(20,3))
 # logistic regression example
-print logistic_regression(x)
+# print logistic_regression(x)
 # mlp example
-print multi_layer_perceptron(x,output_layer=2)
+# print multi_layer_perceptron(x,output_layer=2)

@@ -1,6 +1,7 @@
 import csv, random
 import numpy as np
 import pandas as pd
+import models as ms
 '''The purpose of this script is to
 
 1) Generate either related or random outputs from random data
@@ -28,6 +29,7 @@ class SDO(object):
         if mus != []:
             # self.simContinuous()
             self.mvSimCont()
+            #need to account for multiple groups?
         if props != []:
             self.simDiscrete()
         if type(self.Cdata) == type(self.Ddata):
@@ -71,7 +73,6 @@ class SDO(object):
         '''Simulating multivariate continuous continuous data
         '''
         self.Cdata = np.random.multivariate_normal(np.array(self.mus),np.matrix(self.cov),size = self.n)
-        self.Cdata = self.Cdata.T
         pass
     def mvSimDisc(self,thresholds = None):
         pass
@@ -83,4 +84,8 @@ class SDO(object):
 ###############TEST##############################
 
 mySDO = SDO(n = 100,mus = [10,10,15], cov = [[1,.5,.45],[.5,1,.45],[.45,.5,1]])
-print(mySDO.Cdata.T)
+print(mySDO.Cdata)
+
+#b = ms.logistic_regression(mySDO.Cdata)
+# b = ms.multi_layer_perceptron(mySDO.Cdata)
+# print(b)
