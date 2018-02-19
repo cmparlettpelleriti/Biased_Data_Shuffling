@@ -120,7 +120,7 @@ class SDO(object):
         pass
     def mvSimDisc(self,thresholds = None):
         d = np.random.multivariate_normal(self.mus, self.cov, size = n)
-        d = d.transpose()
+        d = d.transpose()    
         for i in d:
-            c = i
+
         pass
