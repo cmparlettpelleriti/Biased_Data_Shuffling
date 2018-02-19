@@ -2,6 +2,14 @@ import csv, random
 import numpy as np
 import pandas as pd
 import models as ms
+
+#QUESTIONS
+# 1) Do we want to simulate two multivariate sets, one for 0 and one for 1?
+# OR do we want it all to be the same mv dist and let the model decide?
+# 2) AUC values
+# 3) We want to know what the difference is between
+# label shuffling with non model generated and model generated data...
+
 '''The purpose of this script is to
 
 1) Generate either related or random outputs from random data
@@ -80,6 +88,10 @@ class SDO(object):
         # d = d.transpose()
         # print(d)
         # for i in d:
+    def RandomLabels(self):
+        choices = []
+        for i in range(0,len(opts)):
+            pass
 
 ###############TEST##############################
 
