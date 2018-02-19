@@ -15,12 +15,23 @@ class SDO(object):
     #shuffalable data object
     '''cov: can be  one or two dimensional'''
     def __init__(self, n = 10, cols = [], mus = [],cov = [], props = [], opts = []):
+        print("STARTING")
         self.n = n
         self.data = None
         self.Cdata = None
         self.Ddata = None
         self.cols = cols
-        #--------------------
+        self.mus = mus
+        self.cov = cov
+        self.props = props
+        self.opts = opts
+        if mus != []:
+            # self.simContinuous()
+            self.mvSimCont()
+        if props != []:
+            self.simDiscrete()
+        if type(self.Cdata) == type(self.Ddata):
+            self.combineCandD()
         if self.cols == []:
             self.cols = []
             for i in range(0,len(mus)):
@@ -28,25 +39,16 @@ class SDO(object):
         else:
             self.cols = cols
         #--------------------
-        self.mus = mus
-        self.cov = cov
-        self.props = props
-        self.opts = opts
-        #--------------------
-        if mus != []:
-            self.simContinuous()
-        if props != []:
-            self.simDiscrete()
-        if self.Cdata != None and self.Ddata != None:
-            self.combineCandD()
-        #--------------------
     def simContinuous(self):
         '''Simulates continuous data columns, these
         aren't assumed to be correlated...should I add that? Maybe. IDK.'''
-        self.mus = np.array(mus)
-        self.cov = np.array(cov)
-        allNs = self.cov * np.random.randn(n,len(self.mus)) + self.mus
+        self.mus = np.array(self.mus)
+        self.cov = np.matrix(self.cov)
+        allNs = self.cov * np.random.randn(len(self.mus),self.n)
+        for ns in range(0,len(allNs)):
+            allNs[ns] += self.mus[ns]
         self.Cdata = np.matrix(allNs)
+        self.Cdata = self.Cdata.T
     def simDiscrete(self):
         '''simulates discrete data columns, assumed not to be related'''
         ns = []
@@ -68,13 +70,17 @@ class SDO(object):
     def mvSimCont(self):
         '''Simulating multivariate continuous continuous data
         '''
-        self.Cdata = np.random.multivariate_normal(self.mus,self.cov,size = n)
+        self.Cdata = np.random.multivariate_normal(np.array(self.mus),np.matrix(self.cov),size = self.n)
+        self.Cdata = self.Cdata.T
         pass
     def mvSimDisc(self,thresholds = None):
-        d = np.random.multivariate_normal(self.mus, self.cov, size = n)
-        d = d.transpose()
-        print(d)
-        for i in d:
-
-
         pass
+        # d = np.random.multivariate_normal(self.mus, self.cov, size = n)
+        # d = d.transpose()
+        # print(d)
+        # for i in d:
+
+###############TEST##############################
+
+mySDO = SDO(n = 100,mus = [10,10,15], cov = [[1,.5,.45],[.5,1,.45],[.45,.5,1]])
+print(mySDO.Cdata.T)
