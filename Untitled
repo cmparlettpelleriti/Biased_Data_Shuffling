@@ -1,0 +1,9 @@
+import numpy as np
+import matplotlib.pyplot as plt
+nFries <- 50
+meanFryWeight <- 3.25
+sdFryWeight <- 1
+
+
+LargeFry <- (nFries,meanFryWeight,sdFryWeight)
+LargeFryWeight <- sum(LargeFry)
